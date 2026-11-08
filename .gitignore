@@ -1,0 +1,32 @@
+# macOS and personal IDE settings
+.DS_Store
+.idea/
+
+# Local environment configuration; commit examples only
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local secrets
+/backend/secrets/
+
+# Java / Maven generated output
+/backend/target/
+
+# Frontend dependencies, builds and caches
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.tsbuildinfo
+.eslintcache
+*.log
+
+# Python caches and virtual environments
+__pycache__/
+.venv/
+.ruff_cache/
+
+
+/old frontend/

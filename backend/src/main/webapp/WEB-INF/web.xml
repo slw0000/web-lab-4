@@ -1,0 +1,38 @@
+<web-app version="6.1"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <context-param>
+        <param-name>resteasy.preferJacksonOverJsonB</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>resteasy.role.based.security</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <security-role>
+        <role-name>USER</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>ADMIN</role-name>
+    </security-role>
+
+
+
+    <mime-mapping>
+        <extension>json</extension>
+        <mime-type>application/json</mime-type>
+    </mime-mapping>
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/WEB-INF/errors/401.json</location>
+    </error-page>
+</web-app>
