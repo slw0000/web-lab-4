@@ -23,20 +23,19 @@ import web.lab.backend.dto.students.StudentPatchDTO;
 import web.lab.backend.router.annotation.QUERY;
 import web.lab.backend.service.StudentService;
 
-@Path("/requests")
+@Path("/students")
 @SecurityRequirement(name = "bearerAuth")
-public class RequestsHandler {
+public class StudentsHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(RequestsHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(StudentsHandler.class);
 
     @Inject
     private StudentService studentService;
 
-
     @GET
     @Path("")
-    @RolesAllowed({"USER", "ADMIN"})
-    @Produces({MediaType.APPLICATION_JSON})
+    @RolesAllowed({ "USER", "ADMIN" })
+    @Produces({ MediaType.APPLICATION_JSON })
     public StudentsPage getAll(@Valid @BeanParam GetFilterDTO filterParams) {
         log.info("Получен HTTP-запрос GET на получение списка студентов по параметрам BeanParam.");
         var queryFilter = studentService.convertToQuery(filterParams);
@@ -45,38 +44,29 @@ public class RequestsHandler {
 
     @QUERY
     @Path("")
-    @RolesAllowed({"USER", "ADMIN"})
+    @RolesAllowed({ "USER", "ADMIN" })
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
     public StudentsPage getAll(@NotNull @Valid QueryFilterDTO filterParams) {
         log.info("Получен HTTP-запрос QUERY на получение отфильтрованного списка студентов.");
         return studentService.getAll(filterParams);
     }
 
-
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"USER", "ADMIN"})
+    @RolesAllowed({ "USER", "ADMIN" })
     public StudentResponse getById(@PathParam("id") Long id) {
         log.info("Получен HTTP-запрос GET на получение данных студента с ID: {}", id);
         return studentService.getById(id);
     }
-
 
     @POST
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("ADMIN")
-    @APIResponse(
-            responseCode = "201",
-            description = "Студент создан",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = StudentResponse.class)
-            )
-    )
+    @APIResponse(responseCode = "201", description = "Студент создан", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = StudentResponse.class)))
     public Response createNew(@NotNull @Valid CreateStudentDTO studentInfo) {
         log.info("Получен HTTP-запрос POST на создание нового студента.");
         return Response.status(Response.Status.CREATED)
@@ -84,20 +74,15 @@ public class RequestsHandler {
                 .build();
     }
 
-
     @DELETE
     @Path("/{id}")
     @RolesAllowed("ADMIN")
-    @APIResponse(
-            responseCode = "204",
-            description = "Студент удалён"
-    )
+    @APIResponse(responseCode = "204", description = "Студент удалён")
     public Response deleteById(@PathParam("id") Long id) {
         log.info("Получен HTTP-запрос DELETE на удаление студента с ID: {}", id);
         studentService.deleteById(id);
         return Response.noContent().build();
     }
-
 
     @PATCH
     @Path("/{id}")
@@ -109,6 +94,4 @@ public class RequestsHandler {
         return studentService.patchById(id, patchInfo);
     }
 
-
 }
-
