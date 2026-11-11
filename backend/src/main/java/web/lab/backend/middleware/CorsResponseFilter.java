@@ -7,15 +7,17 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.*;
-import  java.util.Set;
-
-
+import java.util.Set;
 
 @Provider
 
 public class CorsResponseFilter implements ContainerResponseFilter {
 
-    private static final Set<String> ALLOWED_ORIGINS = Set.of("http://127.0.0.1:2000", "http://localhost:2000");
+    private static final Set<String> ALLOWED_ORIGINS = Set.of(
+            "http://localhost:2000",
+            "http://127.0.0.1:2000",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173");
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
@@ -23,7 +25,8 @@ public class CorsResponseFilter implements ContainerResponseFilter {
 
         if (origin != null && ALLOWED_ORIGINS.contains(origin)) {
             responseContext.getHeaders().putSingle("Access-Control-Allow-Origin", origin);
-            responseContext.getHeaders().putSingle("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, QUERY, OPTIONS");
+            responseContext.getHeaders().putSingle("Access-Control-Allow-Methods",
+                    "GET, POST, PUT, PATCH, DELETE, QUERY, OPTIONS");
             responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type, Authorization");
             responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
             responseContext.getHeaders().add("Vary", "Origin");

@@ -1,0 +1,29 @@
+<script setup lang="ts">
+defineProps<{
+    errorMessage: string;
+}>();
+</script>
+
+<template>
+    <div v-if="errorMessage" class="error-container">
+        <p id="error-message">{{ errorMessage }}</p>
+    </div>
+</template>
+
+<style scoped>
+.error-container {
+    width: fit-content;
+    max-width: min(90%, 40rem);
+    text-align: center;
+    margin: 1.25rem auto;
+    padding: 0.625rem 1rem;
+    background-color: var(--color-error-container);
+    border: 1px solid var(--color-error-container-border);
+    border-radius: 0.625rem;
+}
+
+#error-message {
+    margin: 0;
+    white-space: pre-line;
+}
+</style>

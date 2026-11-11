@@ -1,12 +1,11 @@
 # Web Lab 3
 
-
 ### Стек:
+
 - Java 21, Jakarta EE 11
 - WildFly 41
 - jOOQ
 - PostgreSQL 18
-
 
 ---
 
@@ -53,7 +52,6 @@ mkdir -p backend/secrets
 
 В поле `k` вставить значение `JWT_SECRET_BASE64URL` из `backend/.env`.
 
-
 3. Запуск
 
 ```bash
@@ -62,16 +60,14 @@ docker compose --env-file backend/.env up --build
 
 ---
 
-
 Адреса:
 
-| Сервис | Адрес |
-|---|---|
-| Фронтенд | http://localhost:2000 |
-| API | http://localhost:8080/api |
+| Сервис     | Адрес                              |
+| ---------- | ---------------------------------- |
+| Фронтенд   | http://localhost:2000              |
+| API        | http://localhost:8080/api          |
 | Swagger UI | http://localhost:8080/swagger.html |
-| OpenAPI | http://localhost:8080/openapi |
-
+| OpenAPI    | http://localhost:8080/openapi      |
 
 ---
 
@@ -88,11 +84,10 @@ PostgreSQL работает в отдельном контейнере.
 
 Новые пользователи регистрируются с ролью USER.
 
-| Роль | Доступ |
-|---|---|
-| USER | Список студентов и просмотр отдельного студента |
+| Роль  | Доступ                                             |
+| ----- | -------------------------------------------------- |
+| USER  | Список студентов и просмотр отдельного студента    |
 | ADMIN | Просмотр, создание, изменение и удаление студентов |
-
 
 Чтобы назначить администратора нужно зарегистрировать пользователя,
 затем выполнить в контейнерной БД:
@@ -117,27 +112,20 @@ RETURNING id, username, role;
 - При выходе refresh отзывается, cookie удаляется.
 - Уже выданный access остаётся действительным до истечения его срока.
 
-
 ---
 
 ## Основные ручки
 
-| Метод | Путь | Назначение |
-|---|---|---|
-| POST | /api/auth/register | Регистрация |
-| POST | /api/auth/login | Вход |
-| POST | /api/auth/refresh | Обновление токенов |
-| POST | /api/auth/logout | Выход |
-| GET | /api/auth/me | Текущий пользователь |
-| GET | /api/requests | Список, фильтры, сортировка и пагинация |
-| QUERY | /api/requests | Фильтры в JSON-теле |
-| GET | /api/requests/{id} | Просмотр студента |
-| POST | /api/requests | Создание студента |
-| PATCH | /api/requests/{id} | Изменение студента |
-| DELETE | /api/requests/{id} | Удаление студента |
-
-
-
-
-
-
+| Метод  | Путь               | Назначение                              |
+| ------ | ------------------ | --------------------------------------- |
+| POST   | /api/auth/register | Регистрация                             |
+| POST   | /api/auth/login    | Вход                                    |
+| POST   | /api/auth/refresh  | Обновление токенов                      |
+| POST   | /api/auth/logout   | Выход                                   |
+| GET    | /api/auth/me       | Текущий пользователь                    |
+| GET    | /api/students      | Список, фильтры, сортировка и пагинация |
+| QUERY  | /api/students      | Фильтры в JSON-теле                     |
+| GET    | /api/students/{id} | Просмотр студента                       |
+| POST   | /api/students      | Создание студента                       |
+| PATCH  | /api/students/{id} | Изменение студента                      |
+| DELETE | /api/students/{id} | Удаление студента                       |
