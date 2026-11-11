@@ -3,8 +3,10 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { getStudentById } from '@/api/students';
 import type { Student } from '@/types/student';
+import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
+const userStore = useUserStore();
 
 const student = ref<Student | null>(null);
 const isLoading = ref(false);
@@ -58,6 +60,13 @@ watch(() => route.params.id, loadStudent, { immediate: true });
 
         <nav class="buttons-container" aria-label="Навигация карточки">
             <RouterLink to="/students" class="buttons"> К списку студентов </RouterLink>
+            <RouterLink
+                v-if="userStore.isAdmin && student"
+                :to="`/students/${student.id}/edit`"
+                class="buttons"
+            >
+                Изменить данные
+            </RouterLink>
         </nav>
 
         <ErrorMessage :error-message="errorMessage" />

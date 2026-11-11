@@ -4,6 +4,7 @@ import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import ProfileView from '@/views/ProfileView.vue';
 import StudView from '@/views/StudView.vue';
+import StudentFormView from '@/views/StudentFormView.vue';
 import { useUserStore } from '@/stores/user';
 import { restoreSession } from '@/auth/restoreSession';
 
@@ -36,6 +37,20 @@ export const router = createRouter({
             component: StudView,
             meta: { requiresAuth: true },
         },
+        {
+            path: '/students/new',
+            component: StudentFormView,
+            meta: { requiresAuth: true, adminOnly: true },
+        },
+        {
+            path: '/students/:id/edit',
+            component: StudentFormView,
+            meta: { requiresAuth: true, adminOnly: true },
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: '/students',
+        },
     ],
 });
 
@@ -51,6 +66,10 @@ router.beforeEach(async (to) => {
     }
 
     if (to.meta.guestOnly && useUserStore().isAuthenticated) {
+        return '/students';
+    }
+
+    if (to.meta.adminOnly && !useUserStore().isAdmin) {
         return '/students';
     }
 });

@@ -5,15 +5,21 @@ import PaginationControls from '@/components/PaginationControls.vue';
 import type { StudentFiltersParams, StudentsQuery } from '@/types/filterParams';
 import type { Student, StudentsPage } from '../types/student';
 import { onMounted, computed, ref } from 'vue';
-import { getAllStudentsFiltered, getAllStudentsQuery } from '@/api/students';
+import { getAllStudentsFiltered, getAllStudentsQuery, deleteStudent } from '@/api/students';
 import ErrorMessage from '@/components/ErrorMessage.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, RouterLink } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
 onMounted(loadStudents);
+
+const userStore = useUserStore();
 
 const isLoading = ref(false);
 const hasLoaded = ref(false);
 const errorMessage = ref('');
+
+const selectedStudentId = ref<number | null>(null);
+const isDeleting = ref(false);
 
 const students = ref<Student[]>([]);
 const studentsCount = ref(0);
@@ -78,6 +84,14 @@ async function loadStudents(): Promise<void> {
             data = await getAllStudentsFiltered(params);
         }
 
+        const lastPage = Math.max(1, data.totalPages ?? 0);
+
+        if (currentPage.value > lastPage) {
+            currentPage.value = lastPage;
+            await loadStudents();
+            return;
+        }
+
         students.value = data.students;
         hasLoaded.value = true;
         totalPages.value = data.totalPages ?? 0;
@@ -87,6 +101,37 @@ async function loadStudents(): Promise<void> {
             error instanceof Error ? error.message : 'Не удалось загрузить студентов';
     } finally {
         isLoading.value = false;
+    }
+}
+
+function selectStudent(id: number | null): void {
+    selectedStudentId.value = id;
+}
+
+function editSelectedStudent(): void {
+    if (selectedStudentId.value === null) return;
+    router.push(`/students/${selectedStudentId.value}/edit`);
+}
+
+async function deleteSelectedStudent(): Promise<void> {
+    const id = selectedStudentId.value;
+
+    if (id === null || !userStore.isAdmin || isLoading.value || isDeleting.value) {
+        return;
+    }
+
+    if (!window.confirm('Удалить выбранного студента?')) return;
+
+    errorMessage.value = '';
+    isDeleting.value = true;
+
+    try {
+        await deleteStudent(id);
+        await loadStudents();
+    } catch (error: unknown) {
+        errorMessage.value = error instanceof Error ? error.message : 'Не удалось удалить студента';
+    } finally {
+        isDeleting.value = false;
     }
 }
 
@@ -103,6 +148,40 @@ function openStudent(id: number): void {
 
         <StudentFilters @apply="applyFilters" />
 
+        <div v-if="userStore.isAdmin" class="buttons-container student-actions">
+            <RouterLink to="/students/new" class="buttons accept-button">
+                Добавить студента
+            </RouterLink>
+            <button
+                type="button"
+                class="buttons"
+                :disabled="selectedStudentId === null || isLoading || isDeleting"
+                @click="selectedStudentId !== null && openStudent(selectedStudentId)"
+            >
+                Досье
+            </button>
+
+            <button
+                v-if="userStore.isAdmin"
+                type="button"
+                class="buttons"
+                :disabled="selectedStudentId === null || isLoading || isDeleting"
+                @click="editSelectedStudent"
+            >
+                Редактировать
+            </button>
+
+            <button
+                v-if="userStore.isAdmin"
+                type="button"
+                class="buttons delete-button"
+                :disabled="selectedStudentId === null || isLoading || isDeleting"
+                @click="deleteSelectedStudent"
+            >
+                Удалить
+            </button>
+        </div>
+
         <ErrorMessage :error-message="errorMessage" />
 
         <h1 v-if="isLoading && !hasLoaded" role="status">Идет загрузка студентов</h1>
@@ -110,6 +189,8 @@ function openStudent(id: number): void {
         <StudentTable
             :students="students"
             :row-offset="(currentPage - 1) * pageSize"
+            :selected-student-id="selectedStudentId"
+            @select="selectStudent"
             @open="openStudent"
             v-else-if="hasLoaded && !errorMessage"
         />
@@ -123,3 +204,10 @@ function openStudent(id: number): void {
         />
     </section>
 </template>
+
+<style scoped>
+.student-actions {
+    margin: 1rem auto;
+    gap: 0.25rem;
+}
+</style>

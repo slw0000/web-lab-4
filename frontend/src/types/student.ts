@@ -27,6 +27,19 @@ export interface StudentResponse {
     student: Student;
 }
 
+export interface StudentFormData {
+    surname: string;
+    name: string;
+    patronymic: string;
+    group: string;
+    isuId: string;
+    dormitoryNumber: number | '';
+    room: number | '';
+    moveInDate: string;
+    foreigner: boolean;
+    notes: string;
+}
+
 export type CreateStudentRequest = Omit<Student, 'id'>;
 
 export type UpdateStudentRequest = Partial<CreateStudentRequest>;

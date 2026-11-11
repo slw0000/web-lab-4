@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import type { StudentFilterForm, StudentFiltersParams } from '@/types/filterParams';
-import { buildStudentFilters } from '@/utils/studentFilters';
+import { buildStudentFilters } from '@/validation/studentFilters.ts';
 import ErrorMessage from './ErrorMessage.vue';
 
 function createInitialForm(): StudentFilterForm {
@@ -67,7 +67,7 @@ function resetFilters(): void {
                             v-model.trim="form.isuId"
                             inputmode="numeric"
                             maxlength="6"
-                            pattern="[0-9]{6}"
+                            pattern="[1-9][0-9]{5}"
                             placeholder="Например, 123456"
                             oninvalid="this.setCustomValidity('ИСУ id должен содержать 6 цифр')"
                             oninput="this.setCustomValidity('')"

@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import type { Student } from '@/types/student';
 
-defineProps<{
+const props = defineProps<{
     students: Student[];
     rowOffset: number;
+    selectedStudentId: number | null;
 }>();
 
 const emit = defineEmits<{
     open: [id: number];
+    select: [id: number | null];
 }>();
 
-const selectedStudentId = ref<number | null>(null);
-
 function selectStudent(id: number): void {
-    selectedStudentId.value = selectedStudentId.value === id ? null : id;
+    emit('select', props.selectedStudentId === id ? null : id);
 }
 </script>
 
