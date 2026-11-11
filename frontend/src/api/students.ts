@@ -39,6 +39,31 @@ export async function getAllStudentsQuery(params: StudentsQuery): Promise<Studen
     return response.json();
 }
 
+export function getStudents(query: StudentsQuery): Promise<StudentsPage> {
+    const useQuery =
+        (query.group?.length ?? 0) > 1 ||
+        (query.dormitoryNumber?.length ?? 0) > 1 ||
+        (query.room?.length ?? 0) > 1;
+
+    if (useQuery) {
+        return getAllStudentsQuery(query);
+    }
+
+    const params = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(query)) {
+        if (value === undefined) continue;
+
+        const parameter = Array.isArray(value) ? value[0] : value;
+
+        if (parameter !== undefined) {
+            params.set(key, String(parameter));
+        }
+    }
+
+    return getAllStudentsFiltered(params);
+}
+
 export async function getStudentById(id: number): Promise<Student> {
     const response = await apiRequest(`${apiRoute}/${id}`, {
         method: 'GET',

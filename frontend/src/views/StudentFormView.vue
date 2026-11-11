@@ -5,6 +5,7 @@ import type { Student, StudentFormData, CreateStudentRequest } from '@/types/stu
 import { createStudent, editStudent, getStudentById } from '@/api/students';
 import { buildStudentData, getStudentChanges } from '@/validation/studentForm';
 import ErrorMessage from '@/components/ErrorMessage.vue';
+import { notifyStudentsChanged } from '@/streams/studentChanges';
 
 const initialForm: StudentFormData = {
     surname: '',
@@ -112,11 +113,13 @@ async function submitForm(): Promise<void> {
 
             if (Object.keys(changes).length > 0) {
                 await editStudent(original.id, changes);
+                notifyStudentsChanged();
             }
 
             await router.replace(`/students/${original.id}`);
         } else {
             const student = await createStudent(data);
+            notifyStudentsChanged();
             await router.replace(`/students/${student.id}`);
         }
     } catch (error: unknown) {

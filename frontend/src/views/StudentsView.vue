@@ -2,13 +2,16 @@
 import StudentTable from '../components/StudentTable.vue';
 import StudentFilters from '../components/StudentFilters.vue';
 import PaginationControls from '@/components/PaginationControls.vue';
-import type { StudentFiltersParams, StudentsQuery } from '@/types/filterParams';
-import type { Student, StudentsPage } from '../types/student';
-import { onMounted, computed, ref } from 'vue';
-import { getAllStudentsFiltered, getAllStudentsQuery, deleteStudent } from '@/api/students';
+import type { StudentFiltersParams } from '@/types/filterParams';
+import type { Student } from '@/types/student';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { deleteStudent } from '@/api/students';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import { useRouter, RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
+import { createStudentsStream } from '@/streams/students';
+import { notifyStudentsChanged } from '@/streams/studentChanges';
+import { createStudentRefreshStream } from '@/streams/studentRefresh';
 
 onMounted(loadStudents);
 
@@ -33,75 +36,70 @@ const currentFilters = ref<StudentFiltersParams>({
     order: 'up',
 });
 
-async function applyFilters(filters: StudentFiltersParams): Promise<void> {
+const studentsStream = createStudentsStream();
+
+const refreshSubscription = createStudentRefreshStream(
+    () => !isLoading.value && !isDeleting.value,
+).subscribe(() => {
+    loadStudents();
+});
+
+const subscription = studentsStream.state$.subscribe((state) => {
+    if (state.status === 'loading') {
+        isLoading.value = true;
+        errorMessage.value = '';
+        selectedStudentId.value = null;
+        return;
+    }
+
+    if (state.status === 'error') {
+        isLoading.value = false;
+        errorMessage.value = state.message;
+        return;
+    }
+
+    const data = state.data;
+    const lastPage = Math.max(1, data.totalPages ?? 0);
+
+    if (currentPage.value > lastPage) {
+        currentPage.value = lastPage;
+        loadStudents();
+        return;
+    }
+
+    students.value = data.students;
+    studentsCount.value = data.studentsCount;
+    totalPages.value = data.totalPages ?? 0;
+    hasLoaded.value = true;
+    isLoading.value = false;
+});
+
+onUnmounted(() => {
+    subscription.unsubscribe();
+    refreshSubscription.unsubscribe();
+});
+
+function applyFilters(filters: StudentFiltersParams): void {
     currentFilters.value = filters;
     currentPage.value = 1;
-    await loadStudents();
+    loadStudents();
 }
 
-async function changePage(page: number): Promise<void> {
+function changePage(page: number): void {
     if (isLoading.value) return;
     if (page < 1 || page > totalPages.value) return;
     if (page === currentPage.value) return;
 
     currentPage.value = page;
-    await loadStudents();
+    loadStudents();
 }
 
-async function loadStudents(): Promise<void> {
-    isLoading.value = true;
-    errorMessage.value = '';
-
-    try {
-        const query: StudentsQuery = {
-            ...currentFilters.value,
-            page: currentPage.value,
-            limit: pageSize,
-        };
-
-        const useQuery =
-            (query.group?.length ?? 0) > 1 ||
-            (query.dormitoryNumber?.length ?? 0) > 1 ||
-            (query.room?.length ?? 0) > 1;
-
-        let data: StudentsPage;
-
-        if (useQuery) {
-            data = await getAllStudentsQuery(query);
-        } else {
-            const params = new URLSearchParams();
-
-            for (const [key, value] of Object.entries(query)) {
-                if (value === undefined) continue;
-
-                const parameter = Array.isArray(value) ? value[0] : value;
-
-                if (parameter !== undefined) {
-                    params.set(key, String(parameter));
-                }
-            }
-
-            data = await getAllStudentsFiltered(params);
-        }
-
-        const lastPage = Math.max(1, data.totalPages ?? 0);
-
-        if (currentPage.value > lastPage) {
-            currentPage.value = lastPage;
-            await loadStudents();
-            return;
-        }
-
-        students.value = data.students;
-        hasLoaded.value = true;
-        totalPages.value = data.totalPages ?? 0;
-        studentsCount.value = data.studentsCount;
-    } catch (error: unknown) {
-        errorMessage.value =
-            error instanceof Error ? error.message : 'Не удалось загрузить студентов';
-    } finally {
-        isLoading.value = false;
-    }
+function loadStudents(): void {
+    studentsStream.load({
+        ...currentFilters.value,
+        page: currentPage.value,
+        limit: pageSize,
+    });
 }
 
 function selectStudent(id: number | null): void {
@@ -127,7 +125,8 @@ async function deleteSelectedStudent(): Promise<void> {
 
     try {
         await deleteStudent(id);
-        await loadStudents();
+        notifyStudentsChanged();
+        loadStudents();
     } catch (error: unknown) {
         errorMessage.value = error instanceof Error ? error.message : 'Не удалось удалить студента';
     } finally {
