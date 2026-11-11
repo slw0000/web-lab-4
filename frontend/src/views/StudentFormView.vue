@@ -134,9 +134,18 @@ async function submitForm(): Promise<void> {
 
         <ErrorMessage :error-message="errorMessage" />
 
+        <div v-if="!isLoading && !isFormReady && errorMessage" class="buttons-container">
+            <RouterLink to="/students" class="buttons"> К списку студентов </RouterLink>
+        </div>
+
         <h1 v-if="isLoading" role="status">Загрузка данных студента</h1>
 
-        <form id="student-form" class="student-card" @submit.prevent="submitForm">
+        <form
+            v-if="isFormReady"
+            id="student-form"
+            class="student-card"
+            @submit.prevent="submitForm"
+        >
             <div class="form-row">
                 <label for="surname">Фамилия <span class="required">*</span></label>
                 <input
