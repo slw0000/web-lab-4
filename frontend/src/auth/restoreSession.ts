@@ -1,13 +1,41 @@
 import { refresh, getCurrentUser } from '@/api/auth';
+import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-export async function restoreSession(): Promise<void> {
-    const userStore = useUserStore();
-    userStore.clearUser();
-    const restored = await refresh();
+let sessionPromise: Promise<void> | null = null;
 
-    if (!restored) return;
+export const isSessionRestoring = ref(false);
+export const sessionError = ref('');
 
-    const user = await getCurrentUser();
-    userStore.setUser(user);
+async function loadSession(): Promise<void> {
+    isSessionRestoring.value = true;
+    sessionError.value = '';
+    useUserStore().clearUser();
+
+    try {
+        const restored = await refresh();
+        if (!restored) return;
+
+        const user = await getCurrentUser();
+        useUserStore().setUser(user);
+    } catch (error: unknown) {
+        sessionError.value =
+            error instanceof Error ? error.message : 'Не удалось восстановить сессию';
+        throw error;
+    } finally {
+        isSessionRestoring.value = false;
+    }
+}
+
+export function restoreSession(): Promise<void> {
+    if (!sessionPromise) {
+        sessionPromise = loadSession();
+    }
+
+    return sessionPromise;
+}
+
+export function resetSessionRestore(): void {
+    sessionPromise = null;
+    sessionError.value = '';
 }

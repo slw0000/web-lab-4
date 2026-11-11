@@ -79,120 +79,6 @@ a {
     visibility: hidden;
 }
 
-
-/* Оформление блока сортировки */
-
-.query-panel {
-    max-width: 70rem;
-    margin: 1rem auto 1.5rem;
-    padding: 1rem;
-    background: var(--color-filter-sort-panel);
-    border: 1px solid #ccc;
-    border-radius: 0.75rem;
-}
-
-.filter-fields {
-    margin-bottom: 0.75rem;
-    padding: 0;
-    border: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-legend {
-    text-align: center;
-    font-size: 1.5rem;
-    padding-bottom: 0.75rem;
-}
-
-.filter-field {
-    display: grid;
-    gap: 0.35rem;
-    font-weight: 600;
-}
-
-.filter-block {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #ccc;
-}
-
-.filter-field input,
-.filter-field select {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    min-height: 2.5rem;
-    padding: 0.4rem 0.6rem;
-    border: 1px solid #888;
-    border-radius: 0.4rem;
-    font: inherit;
-    font-weight: 400;
-}
-
-.sort-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    gap: 0.75rem 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #ccc;
-}
-
-/* Скрытие блока сортировки и фильтрации */
-
-.filter-panel {
-    max-width: 70rem;
-    margin: 1rem auto 1.5rem;
-}
-
-.filter-panel-toggle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border: 1px solid #aaa;
-    border-radius: 0.5rem;
-    background-color: var(--color-filter-sort-panel);
-    font-weight: 600;
-    cursor: pointer;
-    list-style: none;
-}
-
-.filter-panel-toggle::-webkit-details-marker {
-    display: none;
-}
-
-.filter-panel-toggle::after {
-    content: "+";
-    font-size: 1.3rem;
-}
-
-.filter-panel[open] .filter-panel-toggle::after {
-    content: "−";
-}
-
-/* Блок навигации по странцам таблицы */
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin: 1rem auto;
-}
-
-#page-info {
-    font-weight: 600;
-    padding: 0.25em 0.7em;
-    background: var(--color-page-info-background);
-    border-radius: 0.5rem;
-}
-
 /* Общее оформление кнопок для всех страниц */
 
 .buttons-container {
@@ -243,18 +129,14 @@ legend {
     padding: 1.25rem;
 }
 
-#student-full-name {
-    text-align: center;
-    margin-bottom: 1.25rem;
-    margin-top: 0;
-}
+
 
 .student-card dt {
     font-weight: bold;
     margin-bottom: 0.625rem;
 }
 
-.student-card dd {
+.student-card {
     margin-bottom: 1.25rem;
 }
 
@@ -289,7 +171,7 @@ legend {
     min-height: 1.875rem;
 }
 
-.student-info #notes {
+.student-info {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
@@ -313,16 +195,6 @@ textarea {
     .info-row {
         grid-template-columns: 1fr;
         gap: 0.3125rem;
-    }
-
-    .sort-controls {
-        width: 100%;
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .sort-controls select {
-        width: 100%;
     }
 }
 

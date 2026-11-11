@@ -1,15 +1,56 @@
 import { createWebHistory, createRouter } from 'vue-router';
-
 import StudentsView from '@/views/StudentsView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
+import ProfileView from '@/views/ProfileView.vue';
+import StudView from '@/views/StudView.vue';
+import { useUserStore } from '@/stores/user';
+import { restoreSession } from '@/auth/restoreSession';
 
 export const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', redirect: '/students' },
-        { path: '/students', component: StudentsView },
-        { path: '/login', component: LoginView },
-        { path: '/register', component: RegisterView },
+        {
+            path: '/students',
+            component: StudentsView,
+            meta: { requiresAuth: true },
+        },
+        {
+            path: '/login',
+            component: LoginView,
+            meta: { guestOnly: true },
+        },
+        {
+            path: '/register',
+            component: RegisterView,
+            meta: { guestOnly: true },
+        },
+        {
+            path: '/profile',
+            component: ProfileView,
+            meta: { requiresAuth: true },
+        },
+        {
+            path: '/students/:id',
+            component: StudView,
+            meta: { requiresAuth: true },
+        },
     ],
+});
+
+router.beforeEach(async (to) => {
+    try {
+        await restoreSession();
+    } catch {
+        return false;
+    }
+
+    if (to.meta.requiresAuth && !useUserStore().isAuthenticated) {
+        return '/login';
+    }
+
+    if (to.meta.guestOnly && useUserStore().isAuthenticated) {
+        return '/students';
+    }
 });

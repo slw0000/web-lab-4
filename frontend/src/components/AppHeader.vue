@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { logout } from '@/api/auth';
 import ErrorMessage from './ErrorMessage.vue';
+import { resetSessionRestore } from '@/auth/restoreSession';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -20,6 +21,7 @@ async function submitLogout(): Promise<void> {
     try {
         await logout();
         userStore.clearUser();
+        resetSessionRestore();
         await router.replace('/login');
     } catch (error: unknown) {
         errorMessage.value =

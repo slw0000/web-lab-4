@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import type { Student } from '../types/student'
+import { ref } from 'vue';
+import type { Student } from '@/types/student';
 
 defineProps<{
-    students: Student[]
-}>()
+    students: Student[];
+    rowOffset: number;
+}>();
 
 const emit = defineEmits<{
-    remove: [id: number]
-}>()
+    open: [id: number];
+}>();
+
+const selectedStudentId = ref<number | null>(null);
+
+function selectStudent(id: number): void {
+    selectedStudentId.value = selectedStudentId.value === id ? null : id;
+}
 </script>
 
 <template>
@@ -15,33 +23,33 @@ const emit = defineEmits<{
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
+                    <th scope="col">№</th>
                     <th scope="col">Фамилия</th>
                     <th scope="col">Имя</th>
+                    <th scope="col">Отчество</th>
                     <th scope="col">Группа</th>
-                    <th scope="col">Действия</th>
+                    <th scope="col">ИСУ ID</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr v-for="student in students" :key="student.id">
-                    <td>{{ student.id }}</td>
+                <tr
+                    v-for="(student, index) in students"
+                    :key="student.id"
+                    :class="{ selected: selectedStudentId === student.id }"
+                    @click="selectStudent(student.id)"
+                    @dblclick="emit('open', student.id)"
+                >
+                    <td>{{ rowOffset + index + 1 }}</td>
                     <td>{{ student.surname }}</td>
                     <td>{{ student.name }}</td>
+                    <td>{{ student.patronymic ?? '—' }}</td>
                     <td>{{ student.group }}</td>
-                    <td>
-                        <button
-                            type="button"
-                            class="buttons delete-button"
-                            @click="emit('remove', student.id)"
-                        >
-                            Удалить
-                        </button>
-                    </td>
+                    <td>{{ student.isuId }}</td>
                 </tr>
 
                 <tr v-if="students.length === 0">
-                    <td colspan="5">Студенты не найдены</td>
+                    <td colspan="6">Студенты не найдены</td>
                 </tr>
             </tbody>
         </table>
@@ -84,5 +92,9 @@ const emit = defineEmits<{
     .table-container {
         max-width: 90rem;
     }
+}
+
+.table tbody tr {
+    cursor: pointer;
 }
 </style>

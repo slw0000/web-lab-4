@@ -17,7 +17,6 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import web.lab.backend.dto.students.*;
 
-
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,9 +29,12 @@ public class StudentRepository {
     @Inject
     private DSLContext dsl;
 
-
     private Condition buildConditions(QueryFilterDTO filterParams) {
         List<Condition> conditions = new ArrayList<>();
+
+        if (filterParams.isuId() != null && !filterParams.isuId().isBlank()) {
+            conditions.add(STUDENTS.ISU_ID.contains(filterParams.isuId()));
+        }
 
         if (filterParams.name() != null) {
             conditions.add(STUDENTS.NAME.containsIgnoreCase(filterParams.name()));
@@ -58,9 +60,7 @@ public class StudentRepository {
             conditions.add(
                     STUDENTS.MOVE_IN_DATE.between(
                             filterParams.moveInDateFrom(),
-                            filterParams.moveInDateTo()
-                    )
-            );
+                            filterParams.moveInDateTo()));
         }
 
         if (filterParams.foreigner() != null) {
@@ -93,16 +93,12 @@ public class StudentRepository {
         return (filterParams.page() - 1) * filterParams.limit();
     }
 
-
-
-
     public int countStudents(QueryFilterDTO filterParams) {
         Condition filterCondition = buildConditions(filterParams);
 
         return dsl.fetchCount(
                 dsl.selectFrom(STUDENTS)
-                        .where(filterCondition)
-        );
+                        .where(filterCondition));
     }
 
     public List<StudentInfoDTO> getAllStudents(QueryFilterDTO filterParams) {
@@ -111,18 +107,17 @@ public class StudentRepository {
 
         if (filterParams.limit() == null) {
             return dsl.select(
-                            STUDENTS.ID,
-                            STUDENTS.NAME,
-                            STUDENTS.SURNAME,
-                            STUDENTS.PATRONYMIC,
-                            STUDENTS.STUDENT_GROUP,
-                            STUDENTS.ISU_ID,
-                            STUDENTS.DORMITORY_NUMBER,
-                            STUDENTS.ROOM,
-                            STUDENTS.MOVE_IN_DATE,
-                            STUDENTS.FOREIGNER,
-                            STUDENTS.NOTES
-                    )
+                    STUDENTS.ID,
+                    STUDENTS.NAME,
+                    STUDENTS.SURNAME,
+                    STUDENTS.PATRONYMIC,
+                    STUDENTS.STUDENT_GROUP,
+                    STUDENTS.ISU_ID,
+                    STUDENTS.DORMITORY_NUMBER,
+                    STUDENTS.ROOM,
+                    STUDENTS.MOVE_IN_DATE,
+                    STUDENTS.FOREIGNER,
+                    STUDENTS.NOTES)
                     .from(STUDENTS)
                     .where(filterCondition)
                     .orderBy(sortField)
@@ -132,18 +127,17 @@ public class StudentRepository {
         int offset = calculateOffset(filterParams);
 
         return dsl.select(
-                        STUDENTS.ID,
-                        STUDENTS.NAME,
-                        STUDENTS.SURNAME,
-                        STUDENTS.PATRONYMIC,
-                        STUDENTS.STUDENT_GROUP,
-                        STUDENTS.ISU_ID,
-                        STUDENTS.DORMITORY_NUMBER,
-                        STUDENTS.ROOM,
-                        STUDENTS.MOVE_IN_DATE,
-                        STUDENTS.FOREIGNER,
-                        STUDENTS.NOTES
-                )
+                STUDENTS.ID,
+                STUDENTS.NAME,
+                STUDENTS.SURNAME,
+                STUDENTS.PATRONYMIC,
+                STUDENTS.STUDENT_GROUP,
+                STUDENTS.ISU_ID,
+                STUDENTS.DORMITORY_NUMBER,
+                STUDENTS.ROOM,
+                STUDENTS.MOVE_IN_DATE,
+                STUDENTS.FOREIGNER,
+                STUDENTS.NOTES)
                 .from(STUDENTS)
                 .where(filterCondition)
                 .orderBy(sortField)
@@ -153,24 +147,23 @@ public class StudentRepository {
     }
 
     public StudentInfoDTO getStudentById(Long id) {
-        StudentInfoDTO student =  dsl.select(
-                        STUDENTS.ID,
-                        STUDENTS.NAME,
-                        STUDENTS.SURNAME,
-                        STUDENTS.PATRONYMIC,
-                        STUDENTS.STUDENT_GROUP,
-                        STUDENTS.ISU_ID,
-                        STUDENTS.DORMITORY_NUMBER,
-                        STUDENTS.ROOM,
-                        STUDENTS.MOVE_IN_DATE,
-                        STUDENTS.FOREIGNER,
-                        STUDENTS.NOTES
-                )
+        StudentInfoDTO student = dsl.select(
+                STUDENTS.ID,
+                STUDENTS.NAME,
+                STUDENTS.SURNAME,
+                STUDENTS.PATRONYMIC,
+                STUDENTS.STUDENT_GROUP,
+                STUDENTS.ISU_ID,
+                STUDENTS.DORMITORY_NUMBER,
+                STUDENTS.ROOM,
+                STUDENTS.MOVE_IN_DATE,
+                STUDENTS.FOREIGNER,
+                STUDENTS.NOTES)
                 .from(STUDENTS)
                 .where(STUDENTS.ID.eq(id))
                 .fetchOne(Records.mapping(StudentInfoDTO::new));
 
-        if (student == null){
+        if (student == null) {
             throw new NotFoundException("Student with id=" + id + " was not found");
         }
 
@@ -180,16 +173,16 @@ public class StudentRepository {
     public StudentInfoDTO createStudent(CreateStudentDTO studentInfo) {
         try {
             StudentsRecord created = dsl.insertInto(STUDENTS,
-                            STUDENTS.NAME,
-                            STUDENTS.SURNAME,
-                            STUDENTS.PATRONYMIC,
-                            STUDENTS.STUDENT_GROUP,
-                            STUDENTS.ISU_ID,
-                            STUDENTS.DORMITORY_NUMBER,
-                            STUDENTS.ROOM,
-                            STUDENTS.MOVE_IN_DATE,
-                            STUDENTS.FOREIGNER,
-                            STUDENTS.NOTES)
+                    STUDENTS.NAME,
+                    STUDENTS.SURNAME,
+                    STUDENTS.PATRONYMIC,
+                    STUDENTS.STUDENT_GROUP,
+                    STUDENTS.ISU_ID,
+                    STUDENTS.DORMITORY_NUMBER,
+                    STUDENTS.ROOM,
+                    STUDENTS.MOVE_IN_DATE,
+                    STUDENTS.FOREIGNER,
+                    STUDENTS.NOTES)
                     .values(
                             studentInfo.name(),
                             studentInfo.surname(),
@@ -200,8 +193,7 @@ public class StudentRepository {
                             studentInfo.room(),
                             studentInfo.moveInDate(),
                             studentInfo.foreigner(),
-                            studentInfo.notes()
-                    )
+                            studentInfo.notes())
                     .returning(STUDENTS.ID)
                     .fetchOne();
 
@@ -216,14 +208,12 @@ public class StudentRepository {
                     studentInfo.room(),
                     studentInfo.moveInDate(),
                     studentInfo.foreigner(),
-                    studentInfo.notes()
-            );
+                    studentInfo.notes());
         } catch (DataAccessException exception) {
             if ("23505".equals(exception.sqlState())) {
                 throw new ClientErrorException(
                         "Student with this isuId already exists",
-                        Response.Status.CONFLICT
-                );
+                        Response.Status.CONFLICT);
             }
             throw exception;
         }
@@ -285,16 +275,13 @@ public class StudentRepository {
             if (result < 1) {
                 throw new NotFoundException("Student with id=" + id + " was not found");
             }
-        } catch(DataAccessException exception) {
+        } catch (DataAccessException exception) {
             if ("23505".equals(exception.sqlState())) {
                 throw new ClientErrorException(
                         "Student with this isuId already exists",
-                        Response.Status.CONFLICT
-                );
+                        Response.Status.CONFLICT);
             }
             throw exception;
         }
     }
 }
-
-

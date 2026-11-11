@@ -27,7 +27,6 @@ export async function apiRequest(url: string, options: RequestInit = {}): Promis
         const restored = await refreshOnce();
 
         if (!restored) {
-            // типа виндоу локейшн
             throw new Error('Необходимо авторизоваться');
         }
     }
