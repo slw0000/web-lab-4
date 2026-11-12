@@ -1,4 +1,5 @@
-import { refresh, getAccessToken } from './auth.ts';
+import { refresh } from './auth';
+import { useUserStore } from '@/stores/user';
 
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -13,7 +14,7 @@ async function refreshOnce(): Promise<boolean> {
 
 async function sendRequest(url: string, options: RequestInit = {}): Promise<Response> {
     const headers: Headers = new Headers(options.headers);
-    const token: string | null = getAccessToken();
+    const token: string | null = useUserStore().accessToken;
 
     if (token) {
         headers.set('Authorization', `Bearer ${token}`);
@@ -23,7 +24,7 @@ async function sendRequest(url: string, options: RequestInit = {}): Promise<Resp
 }
 
 export async function apiRequest(url: string, options: RequestInit = {}): Promise<Response> {
-    if (!getAccessToken()) {
+    if (!useUserStore().accessToken) {
         const restored = await refreshOnce();
 
         if (!restored) {

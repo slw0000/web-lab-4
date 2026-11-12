@@ -38,19 +38,4 @@ const emit = defineEmits<{
     </nav>
 </template>
 
-<style scoped>
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin: 1rem auto;
-}
-
-#page-info {
-    font-weight: 600;
-    padding: 0.25em 0.7em;
-    background: var(--color-page-info-background);
-    border-radius: 0.5rem;
-}
-</style>
+<style scoped src="./PaginationControls.css"></style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ErrorMessage from '@/components/ErrorMessage.vue';
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage.vue';
 import { useUserStore } from '@/stores/user';
 import { login, getCurrentUser } from '@/api/auth';
 import type { User } from '@/types/auth';

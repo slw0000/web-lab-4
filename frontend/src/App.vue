@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import AppHeader from './components/AppHeader.vue';
-import AppFooter from './components/AppFooter.vue';
-import ErrorMessage from './components/ErrorMessage.vue';
+import AppHeader from './components/AppHeader/AppHeader.vue';
+import AppFooter from './components/AppFooter/AppFooter.vue';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage.vue';
 import { isSessionRestoring, sessionError } from './auth/restoreSession';
 </script>
 
@@ -10,7 +10,7 @@ import { isSessionRestoring, sessionError } from './auth/restoreSession';
     <AppHeader />
 
     <main>
-        <p v-if="isSessionRestoring" role="status">Идёт восстановление сессии</p>
+        <h1 v-if="isSessionRestoring" role="status">Идёт восстановление сессии</h1>
         <ErrorMessage v-else-if="sessionError" :error-message="sessionError" />
         <RouterView v-else />
     </main>
@@ -18,19 +18,4 @@ import { isSessionRestoring, sessionError } from './auth/restoreSession';
     <AppFooter />
 </template>
 
-<style>
-body {
-    margin: 0;
-}
-
-#app {
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-}
-
-#app > main {
-    flex: 1;
-}
-</style>
+<style src="./assets/styles/App.css"></style>

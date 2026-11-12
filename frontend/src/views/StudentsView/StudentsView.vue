@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import StudentTable from '../components/StudentTable.vue';
-import StudentFilters from '../components/StudentFilters.vue';
-import PaginationControls from '@/components/PaginationControls.vue';
+import StudentTable from '@/components/StudentTable/StudentTable.vue';
+import StudentFilters from '@/components/StudentFilters/StudentFilters.vue';
+import PaginationControls from '@/components/PaginationControls/PaginationControls.vue';
 import type { StudentFiltersParams } from '@/types/filterParams';
 import type { Student } from '@/types/student';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { deleteStudent } from '@/api/students';
-import ErrorMessage from '@/components/ErrorMessage.vue';
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage.vue';
 import { useRouter, RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { createStudentsStream } from '@/streams/students';
@@ -204,9 +204,4 @@ function openStudent(id: number): void {
     </section>
 </template>
 
-<style scoped>
-.student-actions {
-    margin: 1rem auto;
-    gap: 0.25rem;
-}
-</style>
+<style scoped src="./StudentsView.css"></style>

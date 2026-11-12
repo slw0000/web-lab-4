@@ -4,7 +4,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import type { Student, StudentFormData, CreateStudentRequest } from '@/types/student';
 import { createStudent, editStudent, getStudentById } from '@/api/students';
 import { buildStudentData, getStudentChanges } from '@/validation/studentForm';
-import ErrorMessage from '@/components/ErrorMessage.vue';
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage.vue';
 import { notifyStudentsChanged } from '@/streams/studentChanges';
 
 const initialForm: StudentFormData = {

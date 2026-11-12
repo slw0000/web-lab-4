@@ -1,14 +1,18 @@
 import type { LoginRequest, RegisterRequest, User, AccessTokenResponse } from '@/types/auth';
+import { useUserStore } from '@/stores/user';
 import { apiRequest } from './http';
 import { errorHandler } from './errors';
 import { config } from '@/config';
 
 const authUrl = `${config.apiBaseUrl}/auth`;
 
-let accessToken: string | null = null;
-
-export function getAccessToken(): string | null {
-    return accessToken;
+function authFetch(path: string, data?: LoginRequest | RegisterRequest): Promise<Response> {
+    return fetch(`${authUrl}${path}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: data === undefined ? undefined : { 'Content-Type': 'application/json' },
+        body: data === undefined ? undefined : JSON.stringify(data),
+    });
 }
 
 async function readResponse<T>(response: Response): Promise<T> {
@@ -24,23 +28,14 @@ async function readResponse<T>(response: Response): Promise<T> {
 }
 
 export async function login(loginData: LoginRequest): Promise<void> {
-    const response = await fetch(`${authUrl}/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData),
-    });
+    const response = await authFetch('/login', loginData);
 
     const data = await readResponse<AccessTokenResponse>(response);
-    accessToken = data.accessToken;
+    useUserStore().setAccessToken(data.accessToken);
 }
 
 export async function register(registerData: RegisterRequest): Promise<void> {
-    const response = await fetch(`${authUrl}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData),
-    });
+    const response = await authFetch('/register', registerData);
 
     if (!response.ok) {
         await errorHandler(response);
@@ -48,18 +43,15 @@ export async function register(registerData: RegisterRequest): Promise<void> {
 }
 
 export async function refresh(): Promise<boolean> {
-    const response = await fetch(`${authUrl}/refresh`, {
-        method: 'POST',
-        credentials: 'include',
-    });
+    const response = await authFetch('/refresh');
 
     if (response.status === 401) {
-        accessToken = null;
+        useUserStore().clearUser();
         return false;
     }
 
     const data = await readResponse<AccessTokenResponse>(response);
-    accessToken = data.accessToken;
+    useUserStore().setAccessToken(data.accessToken);
     return true;
 }
 
@@ -70,11 +62,8 @@ export async function getCurrentUser(): Promise<User> {
 }
 
 export async function logout(): Promise<void> {
-    const response = await fetch(`${authUrl}/logout`, {
-        method: 'POST',
-        credentials: 'include',
-    });
+    const response = await authFetch('/logout');
 
     await readResponse<void>(response);
-    accessToken = null;
+    useUserStore().clearUser();
 }

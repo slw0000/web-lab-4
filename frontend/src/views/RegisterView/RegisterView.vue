@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ErrorMessage from '@/components/ErrorMessage.vue';
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage.vue';
 import { register } from '@/api/auth.js';
 
 const username = ref('');

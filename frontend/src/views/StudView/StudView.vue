@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { getStudentById } from '@/api/students';
 import type { Student } from '@/types/student';
 import { useUserStore } from '@/stores/user';
-import ErrorMessage from '@/components/ErrorMessage.vue';
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage.vue';
 
 const route = useRoute();
 const userStore = useUserStore();
@@ -121,19 +121,4 @@ watch(() => route.params.id, loadStudent, { immediate: true });
     </section>
 </template>
 
-<style scoped>
-#student-full-name {
-    text-align: center;
-    margin-bottom: 1.25rem;
-    margin-top: 0;
-}
-
-#notes {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-dd {
-    margin-bottom: 1.25rem;
-}
-</style>
+<style scoped src="./StudView.css"></style>

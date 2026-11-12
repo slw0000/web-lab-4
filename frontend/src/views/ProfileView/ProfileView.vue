@@ -35,8 +35,4 @@ const userStore = useUserStore();
     </section>
 </template>
 
-<style scoped>
-dd {
-    overflow-wrap: anywhere;
-}
-</style>
+<style scoped src="./ProfileView.css"></style>

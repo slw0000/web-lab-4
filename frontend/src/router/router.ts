@@ -1,10 +1,10 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import StudentsView from '@/views/StudentsView.vue';
-import LoginView from '@/views/LoginView.vue';
-import RegisterView from '@/views/RegisterView.vue';
-import ProfileView from '@/views/ProfileView.vue';
-import StudView from '@/views/StudView.vue';
-import StudentFormView from '@/views/StudentFormView.vue';
+import StudentsView from '@/views/StudentsView/StudentsView.vue';
+import LoginView from '@/views/LoginView/LoginView.vue';
+import RegisterView from '@/views/RegisterView/RegisterView.vue';
+import ProfileView from '@/views/ProfileView/ProfileView.vue';
+import StudView from '@/views/StudView/StudView.vue';
+import StudentFormView from '@/views/StudentFormView/StudentFormView.vue';
 import { useUserStore } from '@/stores/user';
 import { restoreSession } from '@/auth/restoreSession';
 

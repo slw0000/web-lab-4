@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue';
 import type { StudentFilterForm, StudentFiltersParams } from '@/types/filterParams';
 import { buildStudentFilters } from '@/validation/studentFilters.ts';
-import ErrorMessage from './ErrorMessage.vue';
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage.vue';
 
 function createInitialForm(): StudentFilterForm {
     return {
@@ -216,108 +216,4 @@ function resetFilters(): void {
     </details>
 </template>
 
-<style scoped>
-.query-panel {
-    max-width: 70rem;
-    margin: 1rem auto 1.5rem;
-    padding: 1rem;
-    background: var(--color-filter-sort-panel);
-    border: 1px solid var(--color-border-light);
-    border-radius: 0.75rem;
-}
-
-.filter-fields {
-    margin-bottom: 0.75rem;
-    padding: 0;
-    border: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-legend {
-    text-align: center;
-    font-size: 1.5rem;
-    padding-bottom: 0.75rem;
-}
-
-.filter-field {
-    display: grid;
-    gap: 0.35rem;
-    font-weight: 600;
-}
-
-.filter-block {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-border-light);
-}
-
-.filter-field input,
-.filter-field select {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    min-height: 2.5rem;
-    padding: 0.4rem 0.6rem;
-    border: 1px solid var(--color-input-border);
-    border-radius: 0.4rem;
-    font: inherit;
-    font-weight: 400;
-}
-
-.sort-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    gap: 0.75rem 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-border-light);
-}
-
-.filter-panel {
-    max-width: 70rem;
-    margin: 1rem auto 1.5rem;
-}
-
-.filter-panel-toggle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--color-filter-toggle-border);
-    border-radius: 0.5rem;
-    background-color: var(--color-filter-sort-panel);
-    font-weight: 600;
-    cursor: pointer;
-    list-style: none;
-}
-
-.filter-panel-toggle::-webkit-details-marker {
-    display: none;
-}
-
-.filter-panel-toggle::after {
-    content: '+';
-    font-size: 1.3rem;
-}
-
-.filter-panel[open] .filter-panel-toggle::after {
-    content: '−';
-}
-
-@media (max-width: 600px) {
-    .sort-controls {
-        width: 100%;
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .sort-controls select {
-        width: 100%;
-    }
-}
-</style>
+<style scoped src="./StudentFilters.css"></style>
