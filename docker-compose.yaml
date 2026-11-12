@@ -1,10 +1,8 @@
 services:
   db:
     image: postgres:18
-    environment:
-      POSTGRES_USER: ${POSTGRESQL_USER}
-      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
-      POSTGRES_DB: ${POSTGRESQL_DATABASE}
+    env_file:
+      - ./backend/.env
     ports:
       - "5433:5432"
     volumes:
@@ -13,7 +11,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - pg_isready -h 127.0.0.1 -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"
+        - pg_isready -h 127.0.0.1 -U "$${POSTGRESQL_USER}" -d "$${POSTGRESQL_DATABASE}"
       interval: 5s
       timeout: 3s
       retries: 10
@@ -23,7 +21,6 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      POSTGRESQL_URL: jdbc:postgresql://db:5432/${POSTGRESQL_DATABASE}
       JWT_SECRET_KEY_LOCATION: file:/app/secrets/jwt-secret.jwk
     volumes:
       - maven-cache:/root/.m2
@@ -38,7 +35,9 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "2000:2000"
+      - "2000:80"
+    depends_on:
+      - backend
 
 volumes:
   postgres-data:

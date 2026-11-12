@@ -12,6 +12,7 @@ import { useUserStore } from '@/stores/user';
 import { createStudentsStream } from '@/streams/students';
 import { notifyStudentsChanged } from '@/streams/studentChanges';
 import { createStudentRefreshStream } from '@/streams/studentRefresh';
+import { config } from '@/config';
 
 onMounted(loadStudents);
 
@@ -29,7 +30,7 @@ const studentsCount = ref(0);
 
 const currentPage = ref(1);
 const totalPages = ref(0);
-const pageSize = 10;
+const pageSize = config.studentsPageSize;
 
 const currentFilters = ref<StudentFiltersParams>({
     sortBy: 'id',

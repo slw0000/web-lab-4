@@ -1,8 +1,9 @@
 import type { LoginRequest, RegisterRequest, User, AccessTokenResponse } from '@/types/auth';
 import { apiRequest } from './http';
 import { errorHandler } from './errors';
+import { config } from '@/config';
 
-const authUrl = 'http://localhost:8080/api/auth';
+const authUrl = `${config.apiBaseUrl}/auth`;
 
 let accessToken: string | null = null;
 

@@ -8,8 +8,9 @@ import type {
     UpdateStudentRequest,
 } from '@/types/student';
 import type { StudentsQuery } from '@/types/filterParams';
+import { config } from '@/config';
 
-const apiRoute = 'http://localhost:8080/api/students';
+const apiRoute = `${config.apiBaseUrl}/students`;
 
 export async function getAllStudentsFiltered(params: URLSearchParams): Promise<StudentsPage> {
     const response = await apiRequest(`${apiRoute}?${params.toString()}`, {
