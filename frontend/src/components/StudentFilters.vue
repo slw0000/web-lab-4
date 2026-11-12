@@ -67,9 +67,9 @@ function resetFilters(): void {
                             v-model.trim="form.isuId"
                             inputmode="numeric"
                             maxlength="6"
-                            pattern="[1-9][0-9]{5}"
+                            pattern="[0-9]{1,6}"
                             placeholder="Например, 123456"
-                            oninvalid="this.setCustomValidity('ИСУ id должен содержать 6 цифр')"
+                            oninvalid="this.setCustomValidity('ИСУ id должен быть числом')"
                             oninput="this.setCustomValidity('')"
                         />
                     </label>
@@ -222,7 +222,7 @@ function resetFilters(): void {
     margin: 1rem auto 1.5rem;
     padding: 1rem;
     background: var(--color-filter-sort-panel);
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     border-radius: 0.75rem;
 }
 
@@ -252,7 +252,7 @@ legend {
     gap: 1rem;
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--color-border-light);
 }
 
 .filter-field input,
@@ -262,7 +262,7 @@ legend {
     min-width: 0;
     min-height: 2.5rem;
     padding: 0.4rem 0.6rem;
-    border: 1px solid #888;
+    border: 1px solid var(--color-input-border);
     border-radius: 0.4rem;
     font: inherit;
     font-weight: 400;
@@ -275,7 +275,7 @@ legend {
     gap: 0.75rem 1rem;
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--color-border-light);
 }
 
 .filter-panel {
@@ -288,7 +288,7 @@ legend {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    border: 1px solid #aaa;
+    border: 1px solid var(--color-filter-toggle-border);
     border-radius: 0.5rem;
     background-color: var(--color-filter-sort-panel);
     font-weight: 600;

@@ -1,5 +1,4 @@
 :root {
-    --color-current-student-box: #7abfff;
     --color-error-container: #FFCCCC;
     --color-error-container-border: rgb(230, 68, 68);
 
@@ -17,10 +16,20 @@
     --color-student-info-back: #efefef;
     --color-student-info-border: rgb(151, 151, 151);
 
-    --color-header-background: rgb(255 255 255 / 80%);
     --color-page-info-background: rgb(255 255 255 / 80%);
+    --color-background: #f8fafc;
+    --color-footer-background: #939393c6;
 
     --color-filter-sort-panel: #f3f3f3;
+    --color-filter-toggle-border: #aaa;
+
+    --color-border-dark: black;
+    --color-border-light: #ccc;
+    --color-input-border: #888;
+
+    --color-required: red;
+    --color-text: #1e293b;
+
 }
 
 * {
@@ -32,7 +41,7 @@ body {
     font-weight: 400;
     font-size: 1.125rem;
     color: #1e293b;
-    background-color: #f8fafc;
+    background-color: var(--color-background);
 }
 
 header {
@@ -52,31 +61,12 @@ h1 {
     padding: 0.25em 0.7em;
     background: transparent;
     border-radius: 0.5rem;
-}
-
-h1,
-h4 {
     text-align: center;
     font-weight: 700;
 }
 
-h4 {
-    width: fit-content;
-    text-align: center;
-    margin: 1.25rem auto;
-    padding: 0.625rem 0.625rem;
-    background-color: var(--color-current-student-box);
-    border: 1px solid black;
-    border-radius: 0.625rem;
-}
-
 a {
   text-decoration: none;
-}
-
-
-#title-for-blind {
-    visibility: hidden;
 }
 
 /* Общее оформление кнопок для всех страниц */
@@ -92,7 +82,7 @@ a {
     justify-content: center;
     color: var(--color-button-font-default);
     background-color: var(--color-button-default);
-    border: 1px solid black;
+    border: 1px solid var(--color-border-dark);
     border-radius: 0.3125rem;
     margin: 0.3125rem;
     padding: 0.3125rem;
@@ -136,10 +126,6 @@ a {
     margin-bottom: 0.625rem;
 }
 
-.student-card {
-    margin-bottom: 1.25rem;
-}
-
 
 .info-row {
     display: grid;
@@ -161,7 +147,7 @@ a {
 }
 
 .required {
-    color: red;
+    color: var(--color-required);
 }
 
 .student-card input,

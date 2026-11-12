@@ -62,7 +62,7 @@ function selectStudent(id: number): void {
     overflow-x: auto;
     margin: 0 auto;
     margin-bottom: 1.25rem;
-    background: #fff;
+    background: var(--color-table-main-back);
 }
 
 .table {
@@ -73,12 +73,12 @@ function selectStudent(id: number): void {
 .table th {
     font-weight: bold;
     background: var(--color-table-background);
-    border: 1px solid black;
+    border: 1px solid var(--color-border-dark);
     padding: 0.3125rem;
 }
 
 .table td {
-    border: 1px solid black;
+    border: 1px solid var(--color-border-dark);
     padding: 0.3125rem;
     background-color: var(--color-table-main-back);
 }

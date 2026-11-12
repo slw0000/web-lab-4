@@ -10,15 +10,15 @@
 
 <style scoped>
 .app-footer {
-    background-color: #939393c6;
+    background-color: var(--color-footer-background);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
-    padding: 16px 24px;
-    border-top: 1px solid #ccc;
-    font-size: 14px;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-border-light);
+    font-size: 0.875rem;
 }
 
 a {

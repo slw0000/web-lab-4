@@ -64,13 +64,13 @@ async function submitLogout(): Promise<void> {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding: 16px 24px;
-    border-bottom: 1px solid #ccc;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-border-light);
 }
 
 .app-title {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     color: inherit;
     text-decoration: none;
@@ -121,10 +121,6 @@ nav a:hover {
     background-color: var(--color-student-info-back);
     border: 1px solid var(--color-student-info-border);
     border-radius: 0.5rem;
-}
-
-[hidden] {
-    display: none !important;
 }
 
 .user-menu-actions .buttons {

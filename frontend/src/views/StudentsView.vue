@@ -16,18 +16,22 @@ import { config } from '@/config';
 
 onMounted(loadStudents);
 
+onUnmounted(() => {
+    subscription.unsubscribe();
+    refreshSubscription.unsubscribe();
+});
+
 const userStore = useUserStore();
 
 const isLoading = ref(false);
+const isDeleting = ref(false);
 const hasLoaded = ref(false);
 const errorMessage = ref('');
 
 const selectedStudentId = ref<number | null>(null);
-const isDeleting = ref(false);
-
 const students = ref<Student[]>([]);
-const studentsCount = ref(0);
 
+const studentsCount = ref(0);
 const currentPage = ref(1);
 const totalPages = ref(0);
 const pageSize = config.studentsPageSize;
@@ -73,11 +77,6 @@ const subscription = studentsStream.state$.subscribe((state) => {
     totalPages.value = data.totalPages ?? 0;
     hasLoaded.value = true;
     isLoading.value = false;
-});
-
-onUnmounted(() => {
-    subscription.unsubscribe();
-    refreshSubscription.unsubscribe();
 });
 
 function applyFilters(filters: StudentFiltersParams): void {

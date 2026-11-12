@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { getStudentById } from '@/api/students';
 import type { Student } from '@/types/student';
 import { useUserStore } from '@/stores/user';
+import ErrorMessage from '@/components/ErrorMessage.vue';
 
 const route = useRoute();
 const userStore = useUserStore();

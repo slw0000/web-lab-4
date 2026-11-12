@@ -2,8 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ErrorMessage from '@/components/ErrorMessage.vue';
-import { register, getCurrentUser } from '@/api/auth.js';
-import type { User } from '@/types/auth';
+import { register } from '@/api/auth.js';
 
 const username = ref('');
 const email = ref('');

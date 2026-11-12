@@ -1,7 +1,12 @@
-# Web Lab 3
+# Web Lab 4
 
 ### Стек:
 
+- Vue3
+- Pinia
+- RxJS
+- Vite
+- Nginx
 - Java 21, Jakarta EE 11
 - WildFly 41
 - jOOQ
@@ -15,21 +20,18 @@
 
 Все команды ниже выполняются из корня проекта.
 
-1. Скопировать пример:
+1. Подготовить конфигурацию:
 
 ```bash
 cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
 
-В `backend/.env` указать пользователя, пароль и имя базы данных.
+В `backend/.env` указать настройки БД и JWT-секрет.
+В `frontend/.env` задать адрес API, период обновления таблицы
+и количество записей на странице.
 
-Сгенерировать JWT-секрет:
-
-```bash
-openssl rand -base64 32 | tr '+/' '-_' | tr -d '=\r\n'
-```
-
-Скопировать результат в `JWT_SECRET_BASE64URL` в `backend/.env`.
+Файлы `.env` и JWT-ключ не коммитятся.
 
 2. Файл ключа для проверки JWT
 
@@ -52,10 +54,35 @@ mkdir -p backend/secrets
 
 В поле `k` вставить значение `JWT_SECRET_BASE64URL` из `backend/.env`.
 
-3. Запуск
+3. Собрать и запустить приложение:
 
 ```bash
-docker compose --env-file backend/.env up --build
+docker compose up --build
+```
+
+Для запуска в фоне:
+
+```bash
+docker compose up -d --build
+```
+
+Frontend собирается в два этапа: Node.js собирает Vue-приложение,
+Nginx раздаёт готовые файлы и поддерживает клиентские маршруты.
+Браузер обращается к backend напрямую на `http://localhost:8080/api`.
+
+Backend после запуска контейнера генерирует jOOQ-классы и разворачивает
+приложение в WildFly. Первый запуск может занять некоторое время.
+
+Просмотр логов:
+
+```bash
+docker compose logs -f backend
+```
+
+Остановка и удаление контейнеров с сохранением данных БД:
+
+```bash
+docker compose down
 ```
 
 ---
@@ -70,6 +97,26 @@ docker compose --env-file backend/.env up --build
 | OpenAPI    | http://localhost:8080/openapi      |
 
 ---
+
+## Локальная разработка frontend
+
+Нужны Node.js и npm. Backend и PostgreSQL можно запустить в Docker:
+
+```bash
+docker compose up -d db backend
+cd frontend
+npm ci
+npm run dev
+```
+
+Frontend: `http://localhost:5173`.
+В `frontend/.env` используется `VITE_API_BASE_URL=http://localhost:8080/api`.
+
+Проверка типов и production-сборка из папки `frontend`:
+
+```bash
+npm run build
+```
 
 ## База данных
 

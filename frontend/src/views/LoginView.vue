@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import { useUserStore } from '@/stores/user';
-import { login, getCurrentUser } from '@/api/auth.js';
+import { login, getCurrentUser } from '@/api/auth';
 import type { User } from '@/types/auth';
 
 const username = ref('');
